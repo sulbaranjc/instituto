@@ -3,56 +3,119 @@ require_once 'saludarTrait.php';
 require_once 'persona.php';
 require_once 'Alumno.php';
 
+
+$servername = "localhost";
+$username = "sulbaranjc";
+$password = "4688";
+$dbname = "instituto";
+
+// Crear conexión
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+// Verificar conexión
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+
+
+
 $isEditing = false;
 $alumnoToEdit = null;
 
 
 $filename = "data.json";
 
+
+
+
+
+// Cargar datos desde el archivo mysql y convertir cada entrada en un objeto Alumno.
+
+$alumnos = [];
+$sql = "SELECT id, nombre, apellido, telefono, correo_electronico as email, nota1, nota2, nota3, asistencia, finales as examenFinal FROM alumno";
+$result = $conn->query($sql);
+
+if ($result && $result->num_rows > 0) {
+    // Convertir cada fila en un objeto Alumno
+    while($row = $result->fetch_assoc()) {
+        $alumnos[] = new Alumno($row['id'],$row['nombre'], $row['apellido'], $row['telefono'], $row['email'], $row['nota1'], $row['nota2'], $row['nota3'], $row['asistencia'], $row['examenFinal']);
+    }
+}
+
+// Cerrar la conexión
+// $conn->close();
+
+
+
+
+
+
+
+
+
+
+
 // Cargar datos desde el archivo JSON y convertir cada entrada en un objeto Alumno.
-$alumnos = file_exists($filename) ? array_map(function($data) {
-    return new Alumno($data['nombre'], $data['apellido'], $data['telefono'], $data['email'], $data['nota1'], $data['nota2'], $data['nota3'], $data['asistencia'], $data['examenFinal']);
-}, json_decode(file_get_contents($filename), true)) : [];
+//$alumnos = file_exists($filename) ? array_map(function($data) {
+//    return new Alumno($data['nombre'], $data['apellido'], $data['telefono'], $data['email'], $data['nota1'], $data['nota2'], $data['nota3'], $data['asistencia'], $data['examenFinal']);
+//}, json_decode(file_get_contents($filename), true)) : [];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     switch ($_POST['action']) {
         case 'add':
-            $alumno = new Alumno($_POST['nombre'], $_POST['apellido'], $_POST['telefono'], $_POST['email'], $_POST['nota1'], $_POST['nota2'], $_POST['nota3'], $_POST['asistencia'], $_POST['examenFinal']);
-            $alumnos[] = $alumno;
+            $id = $_POST['id'];
+            $nombre = $_POST['nombre'];
+            $apellido = $_POST['apellido'];
+            $telefono = $_POST['telefono'];
+            $correo_electronico = $_POST['correo_electronico'];
+            $nota1 = $_POST['nota1'];
+            $nota2 = $_POST['nota2'];
+            $nota3 = $_POST['nota3'];
+            $asistencia = $_POST['asistencia'];
+            $examenFinal = $_POST['examenFinal']; 
+    
+            // Preparar la sentencia SQL
+            $stmt = $conn->prepare("INSERT INTO alumno (nombre, apellido, telefono, correo_electronico, nota1, nota2, nota3, asistencia, finales) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            $stmt->bind_param("ssssiiiii", $nombre, $apellido, $telefono, $correo_electronico, $nota1, $nota2, $nota3, $asistencia, $examenFinal);
             
-            // Convertir los objetos Alumno de nuevo a arrays para guardar en el archivo JSON.
-            file_put_contents($filename, json_encode(array_map(function(Alumno $alumno) {
-                return [
-                    'nombre' => $alumno->getNombre(),
-                    'apellido' => $alumno->getApellido(),
-                    'telefono' => $alumno->getTelefono(),
-                    'email' => $alumno->getEmail(),
-                    'nota1' => $alumno->getNota1(),
-                    'nota2' => $alumno->getNota2(),
-                    'nota3' => $alumno->getNota3(),
-                    'asistencia' => $alumno->getAsistencia(),
-                    'examenFinal' => $alumno->getExamenFinal(),
-                ];
-            }, $alumnos)));
+            // Ejecutar la sentencia
+            if($stmt->execute()) {
+            //    echo "Nuevo registro creado exitosamente";
+            } else {
+                echo "Error: " . $stmt->error;
+            }
+    
+            // Cerrar la sentencia
+            $stmt->close();
             break;
             case 'update':
-                if (isset($_POST['index'])) {
-                    $index = intval($_POST['index']);
-                    $alumno = new Alumno($_POST['nombre'], $_POST['apellido'], $_POST['telefono'], $_POST['email'], $_POST['nota1'], $_POST['nota2'], $_POST['nota3'], $_POST['asistencia'], $_POST['examenFinal']);
-                    $alumnos[$index] = $alumno;
-                    file_put_contents($filename, json_encode(array_map(function(Alumno $alumno) {
-                        return [
-                            'nombre' => $alumno->getNombre(),
-                            'apellido' => $alumno->getApellido(),
-                            'telefono' => $alumno->getTelefono(),
-                            'email' => $alumno->getEmail(),
-                            'nota1' => $alumno->getNota1(),
-                            'nota2' => $alumno->getNota2(),
-                            'nota3' => $alumno->getNota3(),
-                            'asistencia' => $alumno->getAsistencia(),
-                            'examenFinal' => $alumno->getExamenFinal(),
-                        ];
-                    }, $alumnos)));
+                if (isset($_POST['id'])) {
+                    $id = intval($_POST['id']); // id del alumno a editar
+                    $nombre = $_POST['nombre'];
+                    $apellido = $_POST['apellido'];
+                    $telefono = $_POST['telefono'];
+                    $correo_electronico = $_POST['correo_electronico'];
+                    $nota1 = $_POST['nota1'];
+                    $nota2 = $_POST['nota2'];
+                    $nota3 = $_POST['nota3'];
+                    $asistencia = $_POST['asistencia'];
+                    $examenFinal = $_POST['examenFinal'];
+            
+                    // Preparar la sentencia SQL para actualizar
+                    $stmt = $conn->prepare("UPDATE alumno SET nombre = ?, apellido = ?, telefono = ?, correo_electronico = ?, nota1 = ?, nota2 = ?, nota3 = ?, asistencia = ?, finales = ? WHERE id = ?");
+                    $stmt->bind_param("ssssiiiiii", $nombre, $apellido, $telefono, $correo_electronico, $nota1, $nota2, $nota3, $asistencia, $examenFinal, $id);
+            
+                    // Ejecutar la sentencia
+                    if($stmt->execute()) {
+                        echo "Registro actualizado exitosamente";
+                        header("Location: index.php");
+                    } else {
+                        echo "Error al actualizar: " . $stmt->error;
+                    }
+            
+                    // Cerrar la sentencia
+                    $stmt->close();
                 }
                 break;
 
@@ -120,7 +183,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']) && $_GET['act
 
         <!-- Si estamos editando, incluir un campo oculto con el índice del alumno a editar -->
         <?php if ($isEditing): ?>
-            <input type="hidden" name="index" value="<?= $indexToEdit ?>">
+            <input type="hidden" name="id" value="<?= $alumnoToEdit->getId() ?>">
         <?php endif; ?>
 
         <!-- Nombre y Apellido en la misma línea -->
@@ -128,7 +191,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']) && $_GET['act
             <div class="col-md-6">
                 <div class="mb-3">
                     <label for="nombre" class="form-label">Nombre</label>
-                    
                     <input type="text" class="form-control" id="nombre" name="nombre" value="<?= $isEditing ? $alumnoToEdit->getNombre() : '' ?>" required>
                 </div>
             </div>
@@ -150,8 +212,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']) && $_GET['act
             </div>
             <div class="col-md-6">
                 <div class="mb-3">
-                    <label for="email" class="form-label">Correo Electrónico</label>
-                    <input type="email" class="form-control" id="email" name="email" value="<?= $isEditing ? $alumnoToEdit->getEmail() : '' ?>" required>
+                    <label for="correo_electronico" class="form-label">Correo Electrónico</label>
+                    <input type="email" class="form-control" id="correo_electronico" name="correo_electronico" value="<?= $isEditing ? $alumnoToEdit->getEmail() : '' ?>" required>
                 </div>
             </div>
         </div>

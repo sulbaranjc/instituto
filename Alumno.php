@@ -11,8 +11,8 @@ class Alumno extends Persona {
     private $asistencia;
     private $examenFinal;
 
-    public function __construct($nombre, $apellido, $telefono, $email, $nota1, $nota2, $nota3, $asistencia, $examenFinal) {
-        parent::__construct($nombre, $apellido, $telefono, $email);  // llamamos al constructor de la clase padre
+    public function __construct($id,$nombre, $apellido, $telefono, $email, $nota1, $nota2, $nota3, $asistencia, $examenFinal) {
+        parent::__construct($id,$nombre, $apellido, $telefono, $email);  // llamamos al constructor de la clase padre
         $this->nota1 = $nota1;
         $this->nota2 = $nota2;
         $this->nota3 = $nota3;

@@ -1,12 +1,14 @@
 <?php
 
 class Persona {
+    protected $id;
     protected $nombre;
     protected $apellido;
     protected $telefono;
     protected $email;
 
-    public function __construct($nombre, $apellido, $telefono, $email) {
+    public function __construct($id,$nombre, $apellido, $telefono, $email) {
+        $this->id = $id;
         $this->nombre = $nombre;
         $this->apellido = $apellido;
         $this->telefono = $telefono;
@@ -14,6 +16,11 @@ class Persona {
     }
 
     // Getters
+
+    public function getId() {
+        return $this->id;
+    }
+
     public function getNombre() {
         return $this->nombre;
     }
@@ -31,6 +38,10 @@ class Persona {
     }
 
     // Setters
+    public function setId($nombre) {
+        $this->id = $id;
+    }
+
     public function setNombre($nombre) {
         $this->nombre = $nombre;
     }
