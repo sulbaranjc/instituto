@@ -50,7 +50,7 @@ if ($result && $result->num_rows > 0) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     switch ($_POST['action']) {
         case 'add':
-            $id = $_POST['id'];
+            //$id = $_POST['id'];
             $nombre = $_POST['nombre'];
             $apellido = $_POST['apellido'];
             $telefono = $_POST['telefono'];
@@ -74,6 +74,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
             // Cerrar la sentencia
             $stmt->close();
+            header("Location: index.php");
         break;
         case 'update':
             if (isset($_POST['id'])) {
@@ -104,28 +105,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $stmt->close();
             }
         break;
-        case 'delete': // lo que se ejecuta al presionar el botón Eliminar
-            echo "Eliminar";
-            if (isset($_POST['id'])) {
-                $id = intval($_POST['id']); // id del alumno a eliminar
-        
-                // Preparar la sentencia SQL para eliminar
-                $stmt = $conn->prepare("DELETE FROM alumno WHERE id = ?");
-                $stmt->bind_param("i", $id);
-        
-                // Ejecutar la sentencia
-                if($stmt->execute()) {
-                    echo "Registro eliminado exitosamente";
-                    header("Location: index.php");
-                } else {
-                    echo "Error al eliminar: " . $stmt->error;
-                }
-        
-                // Cerrar la sentencia
-                $stmt->close();
-            }
-        break;
-        
     }
 }
 
@@ -152,9 +131,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']) && $_GET['act
     } else {
         echo "Error al eliminar: " . $stmt->error;
     }
-
     // Cerrar la sentencia
     $stmt->close();
+    header("Location: index.php");
 
 }
 
@@ -303,10 +282,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']) && $_GET['act
             <tr>
             <td>
                 <!-- Enlaces para Editar, Eliminar y presentarse-->
-                <a href="index.php?action=edit&index=<?= $index ?>">
+                <a href="index.php?action=edit&index=<?= $index  ?>">
                     <img src="imgs/file-edit-line.png" alt="Editar" width="24px">
                 </a>
-                <a href="index.php?action=delete&index=<?= $index ?>" onclick="return confirm('¿Estás seguro de querer eliminar este registro?')">
+                <a href="index.php?action=delete&index=<?= $alumno->getId() ?>" onclick="return confirm('¿Estás seguro de querer eliminar este registro?')">
                     <img src="imgs/delete-bin-line.png" alt="Eliminar" width="24px">
                 </a>
             </td>
