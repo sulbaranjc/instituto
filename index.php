@@ -44,6 +44,10 @@ if ($result && $result->num_rows > 0) {
     while($row = $result->fetch_assoc()) {
         $alumnos[] = new Alumno($row['id'],$row['nombre'], $row['apellido'], $row['telefono'], $row['email'], $row['nota1'], $row['nota2'], $row['nota3'], $row['asistencia'], $row['examenFinal']);
     }
+    //ordena el array de alumnos por nombre
+    usort($alumnos, function($a, $b) {
+        return $a->getNombre() <=> $b->getNombre();
+    });
 }
 
 
