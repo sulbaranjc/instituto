@@ -1,0 +1,49 @@
+/* styles.css */
+
+/* Estilo general del cuerpo del documento */
+body {
+  font-family: 'Arial', sans-serif;
+  background-color: #f4f4f4;
+  margin: 0;
+  padding: 0;
+}
+
+/* Estilos personalizados para el modal */
+.modal-content {
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.modal-header {
+  background-color: #007bff;
+  color: white;
+}
+
+.modal-body {
+  font-size: 16px;
+}
+
+.modal-footer {
+  border-top: none;
+}
+
+/* Estilos para el botón que activa el modal */
+.btn-primary {
+  background-color: #007bff;
+  border-color: #007bff;
+  color: white;
+}
+
+.enlace-formal {
+  color: #333; /* Color oscuro, pero puedes ajustarlo según prefieras */
+  text-decoration: none; /* Elimina el subrayado */
+  background-color: transparent; /* Asegura que no tiene fondo */
+  border: none; /* Asegura que no tiene bordes */
+  padding: 0; /* Asegura que no tiene relleno extra */
+  cursor: pointer; /* Cambia el cursor a una mano al pasar el mouse por encima, indicando que es clicable */
+}
+
+.enlace-formal:hover, .enlace-formal:focus {
+  color: #555; /* Cambia el color al pasar el mouse por encima para indicar interactividad */
+  text-decoration: underline; /* Agrega un subrayado al pasar el mouse por encima para indicar interactividad */
+}
