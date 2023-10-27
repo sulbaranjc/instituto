@@ -1,4 +1,11 @@
 <?php
+
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+
+
 require_once 'saludarTrait.php';
 require_once 'persona.php';
 require_once 'Alumno.php';
@@ -26,10 +33,6 @@ $alumnoToEdit = null;
 
 $filename = "data.json";
 
-
-
-
-
 // Cargar datos desde el archivo mysql y convertir cada entrada en un objeto Alumno.
 
 $alumnos = [];
@@ -43,23 +46,6 @@ if ($result && $result->num_rows > 0) {
     }
 }
 
-// Cerrar la conexión
-// $conn->close();
-
-
-
-
-
-
-
-
-
-
-
-// Cargar datos desde el archivo JSON y convertir cada entrada en un objeto Alumno.
-//$alumnos = file_exists($filename) ? array_map(function($data) {
-//    return new Alumno($data['nombre'], $data['apellido'], $data['telefono'], $data['email'], $data['nota1'], $data['nota2'], $data['nota3'], $data['asistencia'], $data['examenFinal']);
-//}, json_decode(file_get_contents($filename), true)) : [];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     switch ($_POST['action']) {
@@ -88,38 +74,58 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
             // Cerrar la sentencia
             $stmt->close();
-            break;
-            case 'update':
-                if (isset($_POST['id'])) {
-                    $id = intval($_POST['id']); // id del alumno a editar
-                    $nombre = $_POST['nombre'];
-                    $apellido = $_POST['apellido'];
-                    $telefono = $_POST['telefono'];
-                    $correo_electronico = $_POST['correo_electronico'];
-                    $nota1 = $_POST['nota1'];
-                    $nota2 = $_POST['nota2'];
-                    $nota3 = $_POST['nota3'];
-                    $asistencia = $_POST['asistencia'];
-                    $examenFinal = $_POST['examenFinal'];
-            
-                    // Preparar la sentencia SQL para actualizar
-                    $stmt = $conn->prepare("UPDATE alumno SET nombre = ?, apellido = ?, telefono = ?, correo_electronico = ?, nota1 = ?, nota2 = ?, nota3 = ?, asistencia = ?, finales = ? WHERE id = ?");
-                    $stmt->bind_param("ssssiiiiii", $nombre, $apellido, $telefono, $correo_electronico, $nota1, $nota2, $nota3, $asistencia, $examenFinal, $id);
-            
-                    // Ejecutar la sentencia
-                    if($stmt->execute()) {
-                        echo "Registro actualizado exitosamente";
-                        header("Location: index.php");
-                    } else {
-                        echo "Error al actualizar: " . $stmt->error;
-                    }
-            
-                    // Cerrar la sentencia
-                    $stmt->close();
+        break;
+        case 'update':
+            if (isset($_POST['id'])) {
+                $id = intval($_POST['id']); // id del alumno a editar
+                $nombre = $_POST['nombre'];
+                $apellido = $_POST['apellido'];
+                $telefono = $_POST['telefono'];
+                $correo_electronico = $_POST['correo_electronico'];
+                $nota1 = $_POST['nota1'];
+                $nota2 = $_POST['nota2'];
+                $nota3 = $_POST['nota3'];
+                $asistencia = $_POST['asistencia'];
+                $examenFinal = $_POST['examenFinal'];
+        
+                // Preparar la sentencia SQL para actualizar
+                $stmt = $conn->prepare("UPDATE alumno SET nombre = ?, apellido = ?, telefono = ?, correo_electronico = ?, nota1 = ?, nota2 = ?, nota3 = ?, asistencia = ?, finales = ? WHERE id = ?");
+                $stmt->bind_param("ssssiiiiii", $nombre, $apellido, $telefono, $correo_electronico, $nota1, $nota2, $nota3, $asistencia, $examenFinal, $id);
+        
+                // Ejecutar la sentencia
+                if($stmt->execute()) {
+                    echo "Registro actualizado exitosamente";
+                    header("Location: index.php");
+                } else {
+                    echo "Error al actualizar: " . $stmt->error;
                 }
-                break;
-
-        // Puedes añadir lógica para modificar y eliminar aquí...
+        
+                // Cerrar la sentencia
+                $stmt->close();
+            }
+        break;
+        case 'delete': // lo que se ejecuta al presionar el botón Eliminar
+            echo "Eliminar";
+            if (isset($_POST['id'])) {
+                $id = intval($_POST['id']); // id del alumno a eliminar
+        
+                // Preparar la sentencia SQL para eliminar
+                $stmt = $conn->prepare("DELETE FROM alumno WHERE id = ?");
+                $stmt->bind_param("i", $id);
+        
+                // Ejecutar la sentencia
+                if($stmt->execute()) {
+                    echo "Registro eliminado exitosamente";
+                    header("Location: index.php");
+                } else {
+                    echo "Error al eliminar: " . $stmt->error;
+                }
+        
+                // Cerrar la sentencia
+                $stmt->close();
+            }
+        break;
+        
     }
 }
 
@@ -131,6 +137,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']) && $_GET['act
         $alumnoToEdit = $alumnos[$indexToEdit];
     }
 }
+
+if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['index'])) {
+    echo "Eliminar";
+    $id = intval($_GET['index']);
+    // Preparar la sentencia SQL para eliminar
+    $stmt = $conn->prepare("DELETE FROM alumno WHERE id = ?");
+    $stmt->bind_param("i", $id);
+
+    // Ejecutar la sentencia
+    if($stmt->execute()) {
+        echo "Registro eliminado exitosamente";
+//        header("Location: index.php");
+    } else {
+        echo "Error al eliminar: " . $stmt->error;
+    }
+
+    // Cerrar la sentencia
+    $stmt->close();
+
+}
+
+
 
 ?>
 
@@ -278,7 +306,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']) && $_GET['act
                 <a href="index.php?action=edit&index=<?= $index ?>">
                     <img src="imgs/file-edit-line.png" alt="Editar" width="24px">
                 </a>
-                <a href="eliminar.php?index=<?= $index ?>">
+                <a href="index.php?action=delete&index=<?= $index ?>" onclick="return confirm('¿Estás seguro de querer eliminar este registro?')">
                     <img src="imgs/delete-bin-line.png" alt="Eliminar" width="24px">
                 </a>
             </td>
