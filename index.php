@@ -112,13 +112,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']) && $_GET['action'] === 'edit' && isset($_GET['index'])) {
+
+if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']) && $_GET['action'] === 'edit' && isset($_GET['id'])) {
     $isEditing = true;
-    $indexToEdit = intval($_GET['index']);
+    $idToEdit = intval($_GET['id']);
     
-    if (isset($alumnos[$indexToEdit])) {
-        $alumnoToEdit = $alumnos[$indexToEdit];
+    // Preparar la sentencia SQL para consultar el registro a editar
+    $stmt = $conn->prepare("SELECT * FROM alumno WHERE id = ?");
+    $stmt->bind_param("i", $idToEdit);
+
+    // Ejecutar la sentencia
+    if($stmt->execute()) {
+        $result = $stmt->get_result();
+        if ($result && $result->num_rows > 0) {
+            $row = $result->fetch_assoc();
+            $alumnoToEdit = new Alumno($row['id'],$row['nombre'], $row['apellido'], $row['telefono'], $row['correo_electronico'], $row['nota1'], $row['nota2'], $row['nota3'], $row['asistencia'], $row['finales']);
+        }else{
+            echo "No se encontró el registro a editar";
+            header("Location: index.php");
+        }
+
+    } else {
+        echo "Error al consultar: " . $stmt->error;
     }
+    // Cerrar la sentencia
+    $stmt->close();
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['index'])) {
@@ -286,7 +304,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']) && $_GET['act
             <tr>
             <td>
                 <!-- Enlaces para Editar, Eliminar y presentarse-->
-                <a href="index.php?action=edit&index=<?= $index  ?>">
+                <a href="index.php?action=edit&id=<?= $alumno->getId()  ?>">
                     <img src="imgs/file-edit-line.png" alt="Editar" width="24px">
                 </a>
                 <a href="index.php?action=delete&index=<?= $alumno->getId() ?>" onclick="return confirm('¿Estás seguro de querer eliminar este registro?')">
