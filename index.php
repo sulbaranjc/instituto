@@ -314,7 +314,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']) && $_GET['act
             <td><?= $alumno->getNombre() ?></td>
             <td><?= $alumno->getApellido() ?></td>
             <td class="text-center"><?= $alumno->getNotaAcumulada() ?></td>
-            <td>
+            <td <?php if($alumno->getNotaAcumulada()<5){echo "style='color:red'";}?> >
                     <?= $alumno->calificar("te informo que he ",$alumno->getNotaAcumulada())?>
                     <a href="#" class="enlace-formal" data-bs-toggle="modal" data-bs-target="#acercaDeModa2"><img src="imgs/mensaje.png" alt="presentarse" title="" /></a>
             </td>
