@@ -10,7 +10,7 @@ require_once 'saludarTrait.php';
 require_once 'persona.php';
 require_once 'Alumno.php';
 
-
+//datos de conexion a la base de datos
 $servername = "localhost";
 $username = "sulbaranjc";
 $password = "4688";
@@ -25,13 +25,9 @@ if ($conn->connect_error) {
 }
 
 
+$isEditing = false; // maneja el estado de edición y agregar
+$alumnoToEdit = null; // Almacena el alumno a editar cuando se selecciona la opción de editar
 
-
-$isEditing = false;
-$alumnoToEdit = null;
-
-
-$filename = "data.json";
 
 // Cargar datos desde el archivo mysql y convertir cada entrada en un objeto Alumno.
 
@@ -50,6 +46,7 @@ if ($result && $result->num_rows > 0) {
     });
 }
 
+// Si se envía el formulario, procesar los datos
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     switch ($_POST['action']) {
@@ -112,10 +109,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-
+// metodo para editar un alumno, se recibe el id del alumno a editar
 if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']) && $_GET['action'] === 'edit' && isset($_GET['id'])) {
-    $isEditing = true;
-    $idToEdit = intval($_GET['id']);
+    $isEditing = true; // cambiar el estado de edición
+    $idToEdit = intval($_GET['id']); // id del alumno a editar
     
     // Preparar la sentencia SQL para consultar el registro a editar
     $stmt = $conn->prepare("SELECT * FROM alumno WHERE id = ?");
@@ -125,7 +122,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']) && $_GET['act
     if($stmt->execute()) {
         $result = $stmt->get_result();
         if ($result && $result->num_rows > 0) {
-            $row = $result->fetch_assoc();
+            $row = $result->fetch_assoc(); // obtener el registro a editar
             $alumnoToEdit = new Alumno($row['id'],$row['nombre'], $row['apellido'], $row['telefono'], $row['correo_electronico'], $row['nota1'], $row['nota2'], $row['nota3'], $row['asistencia'], $row['finales']);
         }else{
             echo "No se encontró el registro a editar";
@@ -139,6 +136,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']) && $_GET['act
     $stmt->close();
 }
 
+
+// metodo para eliminar un alumno, se recibe el id del alumno a eliminar
 if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['index'])) {
     echo "Eliminar";
     $id = intval($_GET['index']);
@@ -159,13 +158,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']) && $_GET['act
 
 }
 
-
-
 ?>
 
+
 <!-- A continuación, puedes continuar con la parte HTML de tu index.php, como el formulario y la tabla de listado de alumnos. -->
-
-
 
 <!DOCTYPE html>
 <html lang="es">
@@ -207,7 +203,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']) && $_GET['act
 
 <!-- Formulario -->
 <div class="container mt-4">
-    <h2 class="text-center"><?= $isEditing ? 'Editar Alumno' : 'Registro de Alumnos' ?></h2>
+    <h2 class="text-center"><?= $isEditing ? 'Editar Alumno' : 'Registro de Alumnos' ?></h2> 
     <form action="index.php" method="post" class="mb-4">
 
         <!-- Si estamos editando, incluir un campo oculto con el índice del alumno a editar -->
