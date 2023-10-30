@@ -13,20 +13,14 @@ require_once 'config.php'; // Incluir la configuración de la base de datos
 require_once 'logica.php'; // Incluir la lógica del programa
 
 // Inicializar variables
-
 $isEditing = false; // maneja el estado de edición y agregar
 $alumnoToEdit = null; // Almacena el alumno a editar cuando se selecciona la opción de editar
 
 
 // Cargar datos desde el archivo mysql y convertir cada entrada en un objeto Alumno.
-
-
 $alumnos = cargarAlumnos($conn);
 
-
-
 // Si se envía el formulario, procesar los datos
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     switch ($_POST['action']) {
         case 'add':
@@ -78,7 +72,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']) && $_GET['act
 ?>
 
 
-<!-- A continuación, puedes continuar con la parte HTML de tu index.php, como el formulario y la tabla de listado de alumnos. -->
+<!-- formulario y la tabla de listado de alumnos. -->
 
 <!DOCTYPE html>
 <html lang="es">
