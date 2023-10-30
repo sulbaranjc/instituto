@@ -6,24 +6,13 @@ error_reporting(E_ALL);
 
 
 
-require_once 'saludarTrait.php';
-require_once 'persona.php';
-require_once 'Alumno.php';
+require_once 'saludarTrait.php';// Incluir el trait Saludar
+require_once 'persona.php';// Incluir la clase Persona
+require_once 'Alumno.php';// Incluir la clase Alumno
+require_once 'config.php'; // Incluir la configuración de la base de datos
+require_once 'logica.php'; // Incluir la lógica del programa
 
-//datos de conexion a la base de datos
-$servername = "localhost";
-$username = "sulbaranjc";
-$password = "4688";
-$dbname = "instituto";
-
-// Crear conexión
-$conn = new mysqli($servername, $username, $password, $dbname);
-
-// Verificar conexión
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
-
+// Inicializar variables
 
 $isEditing = false; // maneja el estado de edición y agregar
 $alumnoToEdit = null; // Almacena el alumno a editar cuando se selecciona la opción de editar
@@ -31,82 +20,34 @@ $alumnoToEdit = null; // Almacena el alumno a editar cuando se selecciona la opc
 
 // Cargar datos desde el archivo mysql y convertir cada entrada en un objeto Alumno.
 
-$alumnos = [];
-$sql = "SELECT id, nombre, apellido, telefono, correo_electronico as email, nota1, nota2, nota3, asistencia, finales as examenFinal FROM alumno";
-$result = $conn->query($sql);
 
-if ($result && $result->num_rows > 0) {
-    // Convertir cada fila en un objeto Alumno
-    while($row = $result->fetch_assoc()) {
-        $alumnos[] = new Alumno($row['id'],$row['nombre'], $row['apellido'], $row['telefono'], $row['email'], $row['nota1'], $row['nota2'], $row['nota3'], $row['asistencia'], $row['examenFinal']);
-    }
-    //ordena el array de alumnos por nombre
-    usort($alumnos, function($a, $b) {
-        return $a->getNombre() <=> $b->getNombre();
-    });
-}
+$alumnos = cargarAlumnos($conn);
+
+
 
 // Si se envía el formulario, procesar los datos
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     switch ($_POST['action']) {
         case 'add':
-            //$id = $_POST['id'];
-            $nombre = $_POST['nombre'];
-            $apellido = $_POST['apellido'];
-            $telefono = $_POST['telefono'];
-            $correo_electronico = $_POST['correo_electronico'];
-            $nota1 = $_POST['nota1']; 
-            $nota1 = (float) $_POST['nota1'];
-            $nota2 = $_POST['nota2'];
-            $nota3 = $_POST['nota3'];
-            $asistencia = $_POST['asistencia'];
-            $examenFinal = $_POST['examenFinal']; 
-            echo $nota1;
-            // Preparar la sentencia SQL
-            $stmt = $conn->prepare("INSERT INTO alumno (nombre, apellido, telefono, correo_electronico, nota1, nota2, nota3, asistencia, finales) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
-            $stmt->bind_param("ssssddddd", $nombre, $apellido, $telefono, $correo_electronico, $nota1, $nota2, $nota3, $asistencia, $examenFinal);
-            
-            // Ejecutar la sentencia
-            if($stmt->execute()) {
-            //    echo "Nuevo registro creado exitosamente";
+            $result = agregarAlumno($_POST, $conn);
+            if ($result === true) {
+                header("Location: index.php");
             } else {
-                echo "Error: " . $stmt->error;
+                echo $result;
             }
-    
-            // Cerrar la sentencia
-            $stmt->close();
-            header("Location: index.php");
-        break;
+            break;
+
         case 'update':
             if (isset($_POST['id'])) {
-                $id = intval($_POST['id']); // id del alumno a editar
-                $nombre = $_POST['nombre'];
-                $apellido = $_POST['apellido'];
-                $telefono = $_POST['telefono'];
-                $correo_electronico = $_POST['correo_electronico'];
-                $nota1 = $_POST['nota1'];
-                $nota2 = $_POST['nota2'];
-                $nota3 = $_POST['nota3'];
-                $asistencia = $_POST['asistencia'];
-                $examenFinal = $_POST['examenFinal'];
-        
-                // Preparar la sentencia SQL para actualizar
-                $stmt = $conn->prepare("UPDATE alumno SET nombre = ?, apellido = ?, telefono = ?, correo_electronico = ?, nota1 = ?, nota2 = ?, nota3 = ?, asistencia = ?, finales = ? WHERE id = ?");
-                $stmt->bind_param("ssssdddddi", $nombre, $apellido, $telefono, $correo_electronico, $nota1, $nota2, $nota3, $asistencia, $examenFinal, $id);
-        
-                // Ejecutar la sentencia
-                if($stmt->execute()) {
-                    echo "Registro actualizado exitosamente";
+                $result = modificarAlumno($_POST, $conn);
+                if ($result === true) {
                     header("Location: index.php");
                 } else {
-                    echo "Error al actualizar: " . $stmt->error;
+                    echo $result;
                 }
-        
-                // Cerrar la sentencia
-                $stmt->close();
             }
-        break;
+            break;
     }
 }
 
@@ -114,49 +55,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']) && $_GET['action'] === 'edit' && isset($_GET['id'])) {
     $isEditing = true; // cambiar el estado de edición
     $idToEdit = intval($_GET['id']); // id del alumno a editar
-    
-    // Preparar la sentencia SQL para consultar el registro a editar
-    $stmt = $conn->prepare("SELECT * FROM alumno WHERE id = ?");
-    $stmt->bind_param("i", $idToEdit);
+    $result = editarAlumno($idToEdit, $conn);
 
-    // Ejecutar la sentencia
-    if($stmt->execute()) {
-        $result = $stmt->get_result();
-        if ($result && $result->num_rows > 0) {
-            $row = $result->fetch_assoc(); // obtener el registro a editar
-            $alumnoToEdit = new Alumno($row['id'],$row['nombre'], $row['apellido'], $row['telefono'], $row['correo_electronico'], $row['nota1'], $row['nota2'], $row['nota3'], $row['asistencia'], $row['finales']);
-        }else{
-            echo "No se encontró el registro a editar";
-            header("Location: index.php");
-        }
-
+    if ($result instanceof Alumno) {
+        $alumnoToEdit = $result;
     } else {
-        echo "Error al consultar: " . $stmt->error;
+        echo $result;
+        header("Location: index.php");
     }
-    // Cerrar la sentencia
-    $stmt->close();
 }
-
 
 // metodo para eliminar un alumno, se recibe el id del alumno a eliminar
 if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['index'])) {
-    echo "Eliminar";
-    $id = intval($_GET['index']);
-    // Preparar la sentencia SQL para eliminar
-    $stmt = $conn->prepare("DELETE FROM alumno WHERE id = ?");
-    $stmt->bind_param("i", $id);
-
-    // Ejecutar la sentencia
-    if($stmt->execute()) {
-        echo "Registro eliminado exitosamente";
-//        header("Location: index.php");
+    $result = eliminarAlumno(intval($_GET['index']), $conn);
+    if ($result === true) {
+        header("Location: index.php");
     } else {
-        echo "Error al eliminar: " . $stmt->error;
+        echo $result;
     }
-    // Cerrar la sentencia
-    $stmt->close();
-    header("Location: index.php");
-
 }
 
 ?>
