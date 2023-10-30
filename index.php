@@ -56,15 +56,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $apellido = $_POST['apellido'];
             $telefono = $_POST['telefono'];
             $correo_electronico = $_POST['correo_electronico'];
-            $nota1 = $_POST['nota1'];
+            $nota1 = $_POST['nota1']; 
+            $nota1 = (float) $_POST['nota1'];
             $nota2 = $_POST['nota2'];
             $nota3 = $_POST['nota3'];
             $asistencia = $_POST['asistencia'];
             $examenFinal = $_POST['examenFinal']; 
-    
+            echo $nota1;
             // Preparar la sentencia SQL
             $stmt = $conn->prepare("INSERT INTO alumno (nombre, apellido, telefono, correo_electronico, nota1, nota2, nota3, asistencia, finales) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
-            $stmt->bind_param("ssssiiiii", $nombre, $apellido, $telefono, $correo_electronico, $nota1, $nota2, $nota3, $asistencia, $examenFinal);
+            $stmt->bind_param("ssssddddd", $nombre, $apellido, $telefono, $correo_electronico, $nota1, $nota2, $nota3, $asistencia, $examenFinal);
             
             // Ejecutar la sentencia
             if($stmt->execute()) {
@@ -92,7 +93,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
                 // Preparar la sentencia SQL para actualizar
                 $stmt = $conn->prepare("UPDATE alumno SET nombre = ?, apellido = ?, telefono = ?, correo_electronico = ?, nota1 = ?, nota2 = ?, nota3 = ?, asistencia = ?, finales = ? WHERE id = ?");
-                $stmt->bind_param("ssssiiiiii", $nombre, $apellido, $telefono, $correo_electronico, $nota1, $nota2, $nota3, $asistencia, $examenFinal, $id);
+                $stmt->bind_param("ssssdddddi", $nombre, $apellido, $telefono, $correo_electronico, $nota1, $nota2, $nota3, $asistencia, $examenFinal, $id);
         
                 // Ejecutar la sentencia
                 if($stmt->execute()) {
