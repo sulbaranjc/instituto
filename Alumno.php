@@ -71,11 +71,11 @@ class Alumno extends Persona {
 
     public function calificar($mensaje,$notaAcumulada) {
         switch (true) {
-            case ($notaAcumulada < 5):
+            case ($notaAcumulada < 4.5):
                 $mensaje.= "Reprobado y debo repetir el curso";
                 break;
     
-            case ($notaAcumulada >= 5 && $notaAcumulada <= 7):
+            case ($notaAcumulada >= 4.5 && $notaAcumulada <= 7):
                 $mensaje .= "Aprobado pero debe esforzarse más";
                 break;
     
