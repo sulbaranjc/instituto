@@ -21,7 +21,7 @@ $filter = null; // Almacena el filtro de búsqueda
 // inicion de los controladores de las acciones del formulario
 
 
-if (isset($_GET['filter'])) {
+if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['filter'])) {
     $filter = $_GET['filter'];
     $alumnos = filtrarAlumnos($conn, $filter); // Puede que necesites crear esta función.
 } else {
@@ -33,6 +33,7 @@ if (isset($_GET['filter'])) {
 
 // controller para el metodo post del formulario, se recibe el action del formulario
 if ($_SERVER['REQUEST_METHOD'] === 'POST') { 
+    echo "entro al post";
     switch ($_POST['action']) {
         case 'add':
             $result = agregarAlumno($_POST, $conn);
@@ -42,12 +43,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 echo $result;
             }
             break;
-
         case 'update':
             if (isset($_POST['id'])) {
                 $result = modificarAlumno($_POST, $conn);
                 if ($result === true) {
-                    header("Location: index.php");
+                    echo "Alumno modificado correctamente";
+                    //header("Location: index.php");
                 } else {
                     echo $result;
                 }
@@ -116,7 +117,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']) && $_GET['act
           </a>
           <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
           <li class="text-center"><a href="#" class="enlace-formal" data-bs-toggle="modal" data-bs-target="#acercaDeModal">Acerca de</a></li>
-
           </ul>
         </li>
       </ul>
@@ -132,9 +132,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']) && $_GET['act
     <?php if ($isEditing): ?>
         <input type="hidden" name="id" value="<?= $alumnoToEdit->getId() ?>">
         <?php endif; ?>
-
-
-
     <form action="index.php" method="get" class="d-flex custom-search-form" role="search">
         <div class="row">    
             <div class="col-md-10">

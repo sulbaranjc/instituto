@@ -22,27 +22,31 @@ function cargarAlumnos($conn) {
   return $alumnos;
 }
 
-function filtrarAlumnos($conn, $nombreFiltro) {
-    $alumnosFiltrados = [];
-
-    // Cargar todos los alumnos
-    $alumnos = cargarAlumnos($conn);
-
-    // Filtrar alumnos por nombre
-    foreach ($alumnos as $alumno) {
-        if (strpos(strtolower($alumno->getNombre()), strtolower($nombreFiltro)) !== false) {
-            $alumnosFiltrados[] = $alumno;
-        }
+function filtrarAlumnos($conn, $filter) {
+    $alumnos = [];
+    $fields = ["nombre", "apellido", "telefono", "correo_electronico", "nota1", "nota2", "nota3", "asistencia", "finales"];
+    
+    $conditions = [];
+    foreach ($fields as $field) {
+        $conditions[] = "$field LIKE '%$filter%'";
     }
+    $sqlCondition = implode(" OR ", $conditions);
 
-    // Ordenar la lista filtrada por nombre
-    usort($alumnosFiltrados, function($a, $b) {
-        return $a->getNombre() <=> $b->getNombre();
-    });
+    $sql = "SELECT id, nombre, apellido, telefono, correo_electronico as email, nota1, nota2, nota3, asistencia, finales as examenFinal FROM alumno WHERE $sqlCondition";
 
-    return $alumnosFiltrados;
+    $result = $conn->query($sql);
+    
+    if ($result && $result->num_rows > 0) {
+        while($row = $result->fetch_assoc()) {
+            $alumnos[] = new Alumno($row['id'],$row['nombre'], $row['apellido'], $row['telefono'], $row['email'], $row['nota1'], $row['nota2'], $row['nota3'], $row['asistencia'], $row['examenFinal']);
+        }
+        
+        usort($alumnos, function($a, $b) {
+            return $a->getNombre() <=> $b->getNombre();
+        });
+    }
+    return $alumnos;
 }
-
 
 
 function agregarAlumno($data, $conn) {
