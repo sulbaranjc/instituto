@@ -17,11 +17,13 @@ $isEditing = false; // maneja el estado de edición y agregar
 $alumnoToEdit = null; // Almacena el alumno a editar cuando se selecciona la opción de editar
 
 
-// Cargar datos desde el archivo mysql y convertir cada entrada en un objeto Alumno.
-$alumnos = cargarAlumnos($conn);
+$alumnos = cargarAlumnos($conn); // Cargar datos desde el archivo mysql y convertir cada entrada en un objeto Alumno.
 
-// Si se envía el formulario, procesar los datos
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+// inicion de los controladores de las acciones del formulario
+
+// controller para el metodo post del formulario, se recibe el action del formulario
+if ($_SERVER['REQUEST_METHOD'] === 'POST') { 
     switch ($_POST['action']) {
         case 'add':
             $result = agregarAlumno($_POST, $conn);
@@ -45,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// metodo para editar un alumno, se recibe el id del alumno a editar
+// controller para editar un alumno, se recibe el id del alumno a editar
 if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']) && $_GET['action'] === 'edit' && isset($_GET['id'])) {
     $isEditing = true; // cambiar el estado de edición
     $idToEdit = intval($_GET['id']); // id del alumno a editar
@@ -59,7 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']) && $_GET['act
     }
 }
 
-// metodo para eliminar un alumno, se recibe el id del alumno a eliminar
+// controller para eliminar un alumno, se recibe el id del alumno a eliminar
 if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['index'])) {
     $result = eliminarAlumno(intval($_GET['index']), $conn);
     if ($result === true) {
