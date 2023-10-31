@@ -17,19 +17,14 @@ $isEditing = false; // maneja el estado de edición y agregar
 $alumnoToEdit = null; // Almacena el alumno a editar cuando se selecciona la opción de editar
 $filter = null; // Almacena el filtro de búsqueda
 
-
 // inicion de los controladores de las acciones del formulario
 
-
-if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['filter'])) {
+if (isset($_GET['filter'])) {
     $filter = $_GET['filter'];
     $alumnos = filtrarAlumnos($conn, $filter); // Puede que necesites crear esta función.
 } else {
     $alumnos = cargarAlumnos($conn); // cargar todos los alumnos
 }
-
-
-
 
 // controller para el metodo post del formulario, se recibe el action del formulario
 if ($_SERVER['REQUEST_METHOD'] === 'POST') { 
@@ -84,7 +79,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']) && $_GET['act
 
 ?>
 
-
 <!-- formulario y la tabla de listado de alumnos. -->
 
 <!DOCTYPE html>
@@ -124,10 +118,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']) && $_GET['act
   </div>
 </nav>
 
-<!-- Formulario -->
+<!-- seccion de la vista -->
 <div class="container mt-4">
     <h2 class="text-center mb-4"><?= $isEditing ? 'Editar Alumno' : 'Registro de Alumnos' ?></h2> 
-    
+<!-- seccion de busqueda -->    
     <form action="index.php" method="get" class="d-flex custom-search-form" role="search">
         <div class="row">    
             <div class="col-md-10">
@@ -138,13 +132,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']) && $_GET['act
             </div>
         </div>
     </form>
-    
-    <!-- Nombre y Apellido en la misma línea -->
+    <!-- Formulario -->
     <form action="index.php" method="post" class="mb-4">
-    <!-- Si estamos editando, incluir un campo oculto con el índice del alumno a editar -->
-    <?php if ($isEditing): ?>
-        <input type="hidden" name="id" value="<?= $alumnoToEdit->getId() ?>">
-    <?php endif; ?>
+        <!-- Si estamos editando, incluir un campo oculto con el índice del alumno a editar -->
+        <?php if ($isEditing): ?>
+            <input type="hidden" name="id" value="<?= $alumnoToEdit->getId() ?>">
+            <?php endif; ?>
+        <!-- Nombre y Apellido en la misma línea -->
         <div class="row">
             <div class="col-md-6">
                 <div class="mb-3">
@@ -233,10 +227,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']) && $_GET['act
             <tr>
             <td>
                 <!-- Enlaces para Editar, Eliminar y presentarse-->
-                <a href="index.php?action=edit&id=<?= $alumno->getId()  ?>">
+                <a href="index.php?action=edit&id=<?= $alumno->getId()?>&filter=<?= $filter?>">
                     <img src="imgs/file-edit-line.png" alt="Editar" width="24px">
                 </a>
-                <a href="index.php?action=delete&index=<?= $alumno->getId() ?>" onclick="return confirm('¿Estás seguro de querer eliminar este registro?')">
+                <a href="index.php?action=delete&index=<?= $alumno->getId() ?>&filter=<?= $filter?>" onclick="return confirm('¿Estás seguro de querer eliminar este registro?')">
                     <img src="imgs/delete-bin-line.png" alt="Eliminar" width="24px">
                 </a>
             </td>
