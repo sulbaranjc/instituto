@@ -21,6 +21,30 @@ function cargarAlumnos($conn) {
   }
   return $alumnos;
 }
+
+function filtrarAlumnos($conn, $nombreFiltro) {
+    $alumnosFiltrados = [];
+
+    // Cargar todos los alumnos
+    $alumnos = cargarAlumnos($conn);
+
+    // Filtrar alumnos por nombre
+    foreach ($alumnos as $alumno) {
+        if (strpos(strtolower($alumno->getNombre()), strtolower($nombreFiltro)) !== false) {
+            $alumnosFiltrados[] = $alumno;
+        }
+    }
+
+    // Ordenar la lista filtrada por nombre
+    usort($alumnosFiltrados, function($a, $b) {
+        return $a->getNombre() <=> $b->getNombre();
+    });
+
+    return $alumnosFiltrados;
+}
+
+
+
 function agregarAlumno($data, $conn) {
   $nombre = $data['nombre'];
   $apellido = $data['apellido'];

@@ -1,5 +1,17 @@
 /* styles.css */
 
+    /* Estilo personalizado */
+    .custom-search-form {
+      width: 100%;
+  }
+  .custom-search-input {
+      flex: 1 1 auto; /* Ocupar todo el espacio disponible */
+      margin-right: 0.5rem; /* Un pequeño margen a la derecha */
+  }
+  .custom-search-button {
+      flex-shrink: 0; /* Evitar que el botón se encoja */
+  }
+
 /* Estilo general del cuerpo del documento */
 body {
   font-family: 'Arial', sans-serif;

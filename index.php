@@ -15,12 +15,21 @@ require_once 'logica.php'; // Incluir la lógica del programa
 // Inicializar variables
 $isEditing = false; // maneja el estado de edición y agregar
 $alumnoToEdit = null; // Almacena el alumno a editar cuando se selecciona la opción de editar
-
-
-$alumnos = cargarAlumnos($conn); // Cargar datos desde el archivo mysql y convertir cada entrada en un objeto Alumno.
+$filter = null; // Almacena el filtro de búsqueda
 
 
 // inicion de los controladores de las acciones del formulario
+
+
+if (isset($_GET['filter'])) {
+    $filter = $_GET['filter'];
+    $alumnos = filtrarAlumnos($conn, $filter); // Puede que necesites crear esta función.
+} else {
+    $alumnos = cargarAlumnos($conn); // cargar todos los alumnos
+}
+
+
+
 
 // controller para el metodo post del formulario, se recibe el action del formulario
 if ($_SERVER['REQUEST_METHOD'] === 'POST') { 
@@ -66,6 +75,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']) && $_GET['act
     $result = eliminarAlumno(intval($_GET['index']), $conn);
     if ($result === true) {
         header("Location: index.php");
+        exit(); // detener la ejecución del script  
     } else {
         echo $result;
     }
@@ -116,15 +126,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']) && $_GET['act
 
 <!-- Formulario -->
 <div class="container mt-4">
-    <h2 class="text-center"><?= $isEditing ? 'Editar Alumno' : 'Registro de Alumnos' ?></h2> 
-    <form action="index.php" method="post" class="mb-4">
-
-        <!-- Si estamos editando, incluir un campo oculto con el índice del alumno a editar -->
-        <?php if ($isEditing): ?>
-            <input type="hidden" name="id" value="<?= $alumnoToEdit->getId() ?>">
+    <h2 class="text-center mb-4"><?= $isEditing ? 'Editar Alumno' : 'Registro de Alumnos' ?></h2> 
+    
+    <!-- Si estamos editando, incluir un campo oculto con el índice del alumno a editar -->
+    <?php if ($isEditing): ?>
+        <input type="hidden" name="id" value="<?= $alumnoToEdit->getId() ?>">
         <?php endif; ?>
 
-        <!-- Nombre y Apellido en la misma línea -->
+
+
+    <form action="index.php" method="get" class="d-flex custom-search-form" role="search">
+        <div class="row">    
+            <div class="col-md-10">
+                <input class="form-control me-2 custom-search-input" type="search" placeholder="Buscar" name="filter" id="filter" aria-label="filter" value="<?= $filter ?>">
+            </div>
+            <div class="col-md-2">
+                <button class="btn btn-outline-success custom-search-button" type="submit">Buscar</button>
+            </div>
+        </div>
+    </form>
+
+    <!-- Nombre y Apellido en la misma línea -->
+    <form action="index.php" method="post" class="mb-4">
         <div class="row">
             <div class="col-md-6">
                 <div class="mb-3">
