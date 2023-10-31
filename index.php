@@ -33,7 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['filter'])) {
 
 // controller para el metodo post del formulario, se recibe el action del formulario
 if ($_SERVER['REQUEST_METHOD'] === 'POST') { 
-    echo "entro al post";
+    //echo "entro al post";
     switch ($_POST['action']) {
         case 'add':
             $result = agregarAlumno($_POST, $conn);
@@ -47,8 +47,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (isset($_POST['id'])) {
                 $result = modificarAlumno($_POST, $conn);
                 if ($result === true) {
-                    echo "Alumno modificado correctamente";
-                    //header("Location: index.php");
+                    //echo "Alumno modificado correctamente";
+                    header("Location: index.php");
                 } else {
                     echo $result;
                 }
@@ -128,10 +128,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']) && $_GET['act
 <div class="container mt-4">
     <h2 class="text-center mb-4"><?= $isEditing ? 'Editar Alumno' : 'Registro de Alumnos' ?></h2> 
     
-    <!-- Si estamos editando, incluir un campo oculto con el índice del alumno a editar -->
-    <?php if ($isEditing): ?>
-        <input type="hidden" name="id" value="<?= $alumnoToEdit->getId() ?>">
-        <?php endif; ?>
     <form action="index.php" method="get" class="d-flex custom-search-form" role="search">
         <div class="row">    
             <div class="col-md-10">
@@ -142,9 +138,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']) && $_GET['act
             </div>
         </div>
     </form>
-
+    
     <!-- Nombre y Apellido en la misma línea -->
     <form action="index.php" method="post" class="mb-4">
+    <!-- Si estamos editando, incluir un campo oculto con el índice del alumno a editar -->
+    <?php if ($isEditing): ?>
+        <input type="hidden" name="id" value="<?= $alumnoToEdit->getId() ?>">
+    <?php endif; ?>
         <div class="row">
             <div class="col-md-6">
                 <div class="mb-3">
