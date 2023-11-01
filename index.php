@@ -239,7 +239,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']) && $_GET['act
             <td class="text-center"><?= $alumno->getNotaAcumulada() ?></td>
             <td <?php if($alumno->getNotaAcumulada()<4.5){echo "style='color:red'";}?> >
                     <?= $alumno->cualitativo($alumno->getNotaAcumulada())?>
-                    <a href="#" class="enlace-formal" data-bs-toggle="modal" data-bs-target="#acercaDeModa2"><img src="imgs/mensaje.png" alt="presentarse" title="" /></a>
+                    <!-- <a href="#" class="enlace-formal" data-bs-toggle="modal" data-bs-target="#acercaDeModa2"><img src="imgs/mensaje.png" alt="presentarse" title="" /></a> -->
             </td>
                 <!-- Más celdas... -->
             </tr>
@@ -270,6 +270,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']) && $_GET['act
 </div>
 
 <!-- Modal Acerca Presentarse -->
+<!--
 <div class="modal modal-xl fade" id="acercaDeModa2" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -289,7 +290,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']) && $_GET['act
     </div>
   </div>
 </div>
-
+-->
 <!-- Scripts JS de Bootstrap 5 (incluye Popper) -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
