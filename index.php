@@ -227,10 +227,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']) && $_GET['act
             <tr>
             <td>
                 <!-- Enlaces para Editar, Eliminar y presentarse-->
-                <a href="index.php?action=edit&id=<?= $alumno->getId()?>&filter=<?= $filter?>">
+                <a href="index.php?action=edit&id=<?= $alumno->getId()?>">
                     <img src="imgs/file-edit-line.png" alt="Editar" width="24px">
                 </a>
-                <a href="index.php?action=delete&index=<?= $alumno->getId() ?>&filter=<?= $filter?>" onclick="return confirm('¿Estás seguro de querer eliminar este registro?')">
+                <a href="index.php?action=delete&index=<?= $alumno->getId() ?>" onclick="return confirm('¿Estás seguro de querer eliminar este registro?')">
                     <img src="imgs/delete-bin-line.png" alt="Eliminar" width="24px">
                 </a>
             </td>
@@ -238,7 +238,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']) && $_GET['act
             <td><?= $alumno->getApellido() ?></td>
             <td class="text-center"><?= $alumno->getNotaAcumulada() ?></td>
             <td <?php if($alumno->getNotaAcumulada()<4.5){echo "style='color:red'";}?> >
-                    <?= $alumno->calificar("te informo que he ",$alumno->getNotaAcumulada())?>
+                    <?= $alumno->cualitativo($alumno->getNotaAcumulada())?>
                     <a href="#" class="enlace-formal" data-bs-toggle="modal" data-bs-target="#acercaDeModa2"><img src="imgs/mensaje.png" alt="presentarse" title="" /></a>
             </td>
                 <!-- Más celdas... -->
@@ -279,6 +279,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']) && $_GET['act
       </div>
       <div class="modal-body text-center">
         <h3 class="">Presentarse</h3>
+        <?= $alumno->calificar("te informo que he ",$alumno->getNotaAcumulada())?>
         <h3 class=""></h3>
 
       </div>

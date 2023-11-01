@@ -89,6 +89,29 @@ class Alumno extends Persona {
         
         return $this->saludar($this->nombre, $mensaje); // llamamos al método saludar del trait
     }    
+
+    public function cualitativo($notaAcumulada) {
+        switch (true) {
+            case ($notaAcumulada < 4.5):
+                $mensaje= "Reprobado";
+                break;
+    
+            case ($notaAcumulada >= 4.5 && $notaAcumulada <= 7):
+                $mensaje = "Aprobado";
+                break;
+    
+            case ($notaAcumulada > 7 && $notaAcumulada < 10):
+                $mensaje = "Sobresaliente";
+                break;
+            case ($notaAcumulada >= 10 ):
+                    $mensaje = "Con honores";
+                break;
+            }
+        
+        return ($mensaje); 
+    }    
+
+
 }
 
 ?>
