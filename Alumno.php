@@ -87,7 +87,7 @@ class Alumno extends Persona {
                 break;
             }
         
-        return $this->saludar($this->nombre, $mensaje); // llamamos al método saludar del trait
+        return $this->saludar("un alumno", $mensaje); // llamamos al método saludar del trait
     }    
 
     public function cualitativo($notaAcumulada) {
