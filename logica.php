@@ -4,6 +4,12 @@ require_once 'saludarTrait.php';
 require_once 'persona.php';
 require_once 'Alumno.php';
 
+
+/**
+ * Conecta a la base de datos carga los datos de los alumnos y los devuelve en un array
+ * @return array
+ * @param mysqli $conn  Conexión a la base de datos
+ */
 function cargarAlumnos($conn) {
   $alumnos = [];
   $sql = "SELECT id, nombre, apellido, telefono, correo_electronico as email, nota1, nota2, nota3, asistencia, finales as examenFinal FROM alumno";
@@ -22,6 +28,10 @@ function cargarAlumnos($conn) {
   return $alumnos;
 }
 
+
+/**
+ * Filtra los alumnos por nombre, apellido, telefono, correo_electronico, nota1, nota2, nota3, asistencia, finales
+ */
 function filtrarAlumnos($conn, $filter) {
     $alumnos = [];
     $fields = ["nombre", "apellido", "telefono", "correo_electronico", "nota1", "nota2", "nota3", "asistencia", "finales"];
@@ -48,7 +58,11 @@ function filtrarAlumnos($conn, $filter) {
     return $alumnos;
 }
 
-
+/**
+ * Agrega un alumno a la base de datos
+ * @param array $data  Datos del alumno a agregar
+ * @param mysqli $conn  Conexión a la base de datos
+ */
 function agregarAlumno($data, $conn) {
   $nombre = $data['nombre'];
   $apellido = $data['apellido'];
@@ -71,6 +85,12 @@ function agregarAlumno($data, $conn) {
   $stmt->close();
 }
 
+
+/**
+ * Modifica un alumno en la base de datos
+ * @param array $data  Datos del alumno a modificar
+ * @param mysqli $conn  Conexión a la base de datos
+ */
 function modificarAlumno($data, $conn) {
   $id = intval($data['id']); 
   $nombre = $data['nombre'];
@@ -94,6 +114,12 @@ function modificarAlumno($data, $conn) {
   $stmt->close();
 }
 
+
+/**
+ * Elimina un alumno de la base de datos
+ * @param int $id  ID del alumno a eliminar
+ * @param mysqli $conn  Conexión a la base de datos
+ */
 function eliminarAlumno($id, $conn) {
   $stmt = $conn->prepare("DELETE FROM alumno WHERE id = ?");
   $stmt->bind_param("i", $id);
@@ -108,6 +134,12 @@ function eliminarAlumno($id, $conn) {
   }
 }
 
+
+/**
+ * Elimina un alumno de la base de datos
+ * @param int $id  ID del alumno a eliminar
+ * @param mysqli $conn  Conexión a la base de datos
+ */
 function editarAlumno($id, $conn) {
   $stmt = $conn->prepare("SELECT * FROM alumno WHERE id = ?");
   $stmt->bind_param("i", $id);
