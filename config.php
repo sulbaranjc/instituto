@@ -1,18 +1,14 @@
 <?php
-// datos para la conexion a mysql
-$servername = "localhost";
-$username = "sulbaranjc";
-$password = "4688";
-$dbname = "instituto";
+require_once 'Database.php'; // Incluir la configuración de la base de datos
+// Para utilizar la conexión en otro archivo, llamar a:
+$conn = Database::getInstance()->getConnection(); //
 
-// Crear conexión
-$conn = new mysqli($servername, $username, $password, $dbname); //variable global para acceder a la conexion
+//Database::getInstance(): Este es un ejemplo de un patrón de diseño Singleton en PHP. El Singleton es un patrón de diseño que restringe la instanciación de una clase a un único objeto. Se utiliza para proporcionar un punto de acceso global a la instancia, lo que puede ser útil para cosas como conexiones a bases de datos. En este caso, Database::getInstance() está llamando a la función getInstance() dentro de la clase Database, que devolverá una instancia de la clase Database.
 
-// Verificar conexión
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
-$setnames = $conn->prepare("SET NAMES 'utf8'"); //para que se muestren los acentos y ñ
-$setnames->execute();
-//var_dump($setnames);
-?>
+//->getConnection(): Una vez que tenemos una instancia de la clase Database, llamamos al método getConnection(). Este método se encargará de establecer y devolver una conexión a la base de datos.
+
+//$conn = ...: Finalmente, la conexión a la base de datos que se devuelve se almacena en la variable $conn. Esta variable se puede utilizar luego para realizar consultas y otras operaciones en la base de datos.
+
+//Por lo tanto, esta línea de código es una forma eficiente de obtener una conexión a una base de datos en PHP utilizando el patrón de diseño Singleton.
+
+// Ya puedes utilizar $conn para realizar operaciones con la base de datos
