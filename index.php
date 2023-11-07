@@ -133,7 +133,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']) && $_GET['act
         </div>
     </form>
     <!-- Formulario -->
-    <form action="index.php" method="post" class="mb-4">
+    <form id="formAlumno" onsubmit="return validarNombre()" action="index.php" method="post" class="mb-4">
         <!-- Si estamos editando, incluir un campo oculto con el índice del alumno a editar -->
         <?php if ($isEditing): ?>
             <input type="hidden" name="id" value="<?= $alumnoToEdit->getId() ?>">
@@ -144,6 +144,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']) && $_GET['act
                 <div class="mb-3">
                     <label for="nombre" class="form-label">Nombre</label>
                     <input type="text" class="form-control" id="nombre" name="nombre" value="<?= $isEditing ? $alumnoToEdit->getNombre() : '' ?>" required>
+                    <div id="nombreError" class="form-text text-danger" style="display: none;">El nombre debe tener más de 4 caracteres.</div>
                 </div>
             </div>
             <div class="col-md-6">
@@ -293,5 +294,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']) && $_GET['act
 -->
 <!-- Scripts JS de Bootstrap 5 (incluye Popper) -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="./scripts.js"></script>
 </body>
 </html>
