@@ -2,10 +2,10 @@
 class Database {
     private static $instance = null;
     private $conn;
-    private $servername = "localhost";
-    private $username = "sulbaranjc";
-    private $password = "4688";
-    private $dbname = "instituto";
+    private $servername = "srv692.hstgr.io";
+    private $username = "u935392843_root";
+    private $password = "Jc10439536+";
+    private $dbname = "u935392843_Prueba";
 
     private function __construct() { // El constructor es privado, no permite que se genere un objeto desde fuera de la clase
         $this->conn = new mysqli($this->servername, $this->username, $this->password, $this->dbname);
