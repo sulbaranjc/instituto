@@ -1,8 +1,8 @@
 <?php
-require_once 'config.php';
-require_once 'saludarTrait.php';
-require_once 'persona.php';
-require_once 'Alumno.php';
+require_once './config.php';
+require_once './SaludarTrait.php';
+require_once './Persona.php';
+require_once './Alumno.php';
 
 
 /**

@@ -6,11 +6,11 @@ error_reporting(E_ALL); // Reportar todos los errores de PHP
 
 
 
-require_once 'saludarTrait.php';// Incluir el trait Saludar
-require_once 'persona.php';// Incluir la clase Persona
-require_once 'Alumno.php';// Incluir la clase Alumno
-require_once 'config.php'; // Incluir la configuración de la base de datos
-require_once 'logica.php'; // Incluir la lógica del programa
+require_once './SaludarTrait.php';// Incluir el trait Saludar
+require_once './Persona.php';// Incluir la clase Persona
+require_once './Alumno.php';// Incluir la clase Alumno
+require_once './config.php'; // Incluir la configuración de la base de datos
+require_once './logica.php'; // Incluir la lógica del programa
 
 // Inicializar variables
 $isEditing = false; // maneja el estado de edición y agregar
