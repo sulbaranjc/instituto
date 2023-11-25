@@ -88,38 +88,41 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']) && $_GET['act
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Estilos CSS de Bootstrap 5 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="./styles.css">
     <title>CRUD Alumnos</title>
 </head>
 <body>
 
 <!-- Navegación -->
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <div class="container-fluid">
-    <a class="navbar-brand" href="#">CRUD Alumnos</a>
-    <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav">
-        <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="#">Alumnos</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Informes</a>
-        </li>
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            Ayuda
-          </a>
-          <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-          <li class="text-center"><a href="#" class="enlace-formal" data-bs-toggle="modal" data-bs-target="#acercaDeModal">Acerca de</a></li>
-          </ul>
-        </li>
-      </ul>
+<div class="container">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+        <img src="./imgs/logo-ilerna-02.png" class="img-fluid" style="max-width: 100px;">
+        <a class="navbar-brand" href="#">CRUD Alumnos</a>
+        <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+            <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="#">Alumnos</a>
+            </li>
+            <li class="nav-item">
+            <a class="nav-link" href="#">Informes</a>
+            </li>
+            <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Ayuda
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <li class="text-center"><a href="#" class="enlace-formal" data-bs-toggle="modal" data-bs-target="#acercaDeModal">Acerca de</a></li>
+            </ul>
+            </li>
+        </ul>
+        </div>
     </div>
-  </div>
-</nav>
+    </nav>
+</div>
 
 <!-- seccion de la vista -->
-<div class="container mt-4">
+<div class="container mt-4 regalumn">
     <h2 class="text-center mb-4"><?= $isEditing ? 'Editar Alumno' : 'Registro de Alumnos' ?></h2> 
 <!-- seccion de busqueda -->    
     <form action="index.php" method="get" class="d-flex custom-search-form" role="search">
@@ -211,9 +214,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']) && $_GET['act
     </form>
 </div>
 <!-- Tabla de Alumnos -->
+
 <table class="table container">
     <h3 class="text-center">Listado de Alumnos</h3>
-    <thead>
+    <thead">
         <tr class="text-center">
             <th>Acciones</th>
             <th>Nombre</th>
@@ -270,28 +274,135 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']) && $_GET['act
   </div>
 </div>
 
-<!-- Modal Acerca Presentarse -->
-<!--
-<div class="modal modal-xl fade" id="acercaDeModa2" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="modalLabel">Acerca de</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-      </div>
-      <div class="modal-body text-center">
-        <h3 class="">Presentarse</h3>
-        <?= $alumno->calificar("te informo que he ",$alumno->getNotaAcumulada())?>
-        <h3 class=""></h3>
+<!-- Footer -->
 
-      </div>
-      <div class="modal-footer justify-content-center">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+
+<section class="">
+    <div class="container text-center text-md-start mt-5 bg-light">
+      <!-- Grid row -->
+      <div class="row mt-3">
+        <!-- Grid column -->
+        <div class="col-md-3 col-lg-4 col-xl-3 mx-auto mb-4">
+          <!-- Content -->
+          <h6 class="text-uppercase fw-bold mb-4 mt-5">
+            <i class="fas fa-gem me-3 text-secondary"></i>Ilerna Madrid
+          </h6>
+          <img src="./imgs/logo-ilerna-02.png" class="img-fluid" style="max-width: 100px;">
+        <div class="mt-3">
+          <p class="m-0">C. de Julián Camarillo, 4C 28037 <br> Madrid (distrito Madbit) <br> España <br>Información: +34 91 08 41 672 <br>info@ilernamadrid.com </p>
+          
         </div>
-    </div>
+      </div>
+      <!-- Grid column -->
+      
+      <!-- Grid column -->
+      <div class="col-md-2 col-lg-2 col-xl-2 mx-auto mb-4 mt-5">
+        <!-- Links -->
+        <h6 class="text-uppercase fw-bold mb-4">
+          Academico
+        </h6>
+        <p>
+          <a href="http://localhost:8080/asignatura/listar" class="text-reset">Asignatura</a>
+        </p>
+        <p>
+          <a href="http://localhost:8080/profesor/crud" class="text-reset">Profesor</a>
+        </p>
+        <p>
+          <a href="http://localhost:8080/alumno/crud" class="text-reset">Alumno</a>
+        </p>
+        <p>
+          <a href="http://localhost:8080/aula/crud" class="text-reset">Aula</a>
+        </p>
+      </div>
+      <!-- Grid column -->
+      
+      <!-- Grid column -->
+      <div class="col-md-3 col-lg-2 col-xl-2 mx-auto mb-4 mt-5">
+        <!-- Links -->
+        <h6 class="text-uppercase fw-bold mb-4">
+          Detalles del Curso
+        </h6>
+        <p>
+          <a href="http://localhost:8080/fp/crud" class="text-reset">Formación Profesional</a>
+        </p>
+        <p>
+          <a href="http://localhost:8080/turno/crud" class="text-reset">Turno</a>
+        </p>
+        <p>
+          <a href="http://localhost:8080/modalidad/crud" class="text-reset">Modalidad</a>
+        </p>
+        <p>
+          <a href="http://localhost:8080/periodo/crud" class="text-reset">Periodo</a>
+        </p>
+        <p>
+          <a href="http://localhost:8080/grupo/crud" class="text-reset">Grupo</a>
+        </p>
+      </div>
+      <!-- Grid column -->
+      
+      <!-- Grid column -->
+      <div class="col-md-4 col-lg-3 col-xl-3 mx-auto mb-md-0 mb-4 mt-5">
+        <!-- Links -->
+        <h6 class="text-uppercase fw-bold mb-4">
+          Control de Asistencia
+        </h6>
+        <p>
+          <a href="http://localhost:8080/horario/crud" class="text-reset">Horario</a>
+        </p>
+        <p>
+          <a href="http://localhost:8080/tipoasistencia/crud"class="text-reset">Tipo Asistencia</a>
+        </p>
+    
+      </div>
+    <!-- Grid row -->
   </div>
-</div>
--->
+</section>
+<!-- Fin Footer -->
+
+<!-- Section: Links  -->
+<section class="">
+<div class="container text-center text-md-start mt-">
+  <!-- Grid row -->
+  <div class="row mt-3">
+    <!-- Grid column -->
+    <div class="col-md-3 col-lg-3 col-xl-3 mx-auto mb-md-0 mb-4">
+      <p class="fas fa-home me-3 text-secondary"> Website desing Juan Carlos Sulbaran</p>
+    </div>
+    <!-- Grid column -->
+    
+    <!-- Grid column -->
+    
+    <div class="col-md-6 col-lg-6 col-xl-6 mx-auto mb-4 text-center">
+      <!--<div> Iconos diseñados por <a href="https://www.flaticon.es/autores/stockio" title="Stockio"> Stockio </a> from <a href="https://www.flaticon.es/" title="Flaticon">www.flaticon.es'</a></div>
+      -->
+      <a class="m-1" href="https://www.facebook.com/ILERNAFormacion/" style="text-decoration: none;">
+        <img class="my-1" src="./imgs/facebook.png" style="width: 2em; height: 2em; color:#179DB8; border: none;">
+      </a>
+      <a class="m-1" href="https://www.instagram.com/ilernaformacion/?hl=es" style="text-decoration: none;">
+        <img class="my-1" src="./imgs/instagram.png" style="width: 2em; height: 2em; color:#179DB8; border: none;">
+      </a>
+      <a class="m-1" href="https://twitter.com/ILERNAFormacion" style="text-decoration: none;">
+        <img class="my-1" src="./imgs/twitter.png" style="width: 2em; height: 2em; color:#179DB8; border: none;">
+      </a>
+      </div>
+      
+      <!-- Grid column -->
+      <!-- Grid column -->
+      <div class="col-md-3 col-lg-3 col-xl-3 mx-auto mb-4">
+        <!-- Content -->
+        
+        <p class="m-0">Copyright JCMF | Ilerna Madrid</p>
+        <p class="m-0"><a href="#">Información legal</a> | <a href="#">Política de privacidad</a></p>
+        
+      </div>
+      
+      <!-- Grid column -->
+    </div>
+    <!-- Grid row -->
+  </div>
+</section>
+
+
 <!-- Scripts JS de Bootstrap 5 (incluye Popper) -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="./scripts.js"></script>
